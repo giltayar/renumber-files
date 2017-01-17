@@ -1,0 +1,37 @@
+{
+  "name": "renumber-files",
+  "version": "1.0.0",
+  "description": "Renumbers files with numbers in them",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "^3.5.0",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^3.13.1",
+    "mocha": "^3.2.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CreateBootcamp/renumber-files.git"
+  },
+  "keywords": [
+    "files",
+    "node",
+    "renumber"
+  ],
+  "author": "Gil Tayar <gil@tayar.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CreateBootcamp/renumber-files/issues"
+  },
+  "homepage": "https://github.com/CreateBootcamp/renumber-files#readme"
+}
