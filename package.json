@@ -1,6 +1,6 @@
 {
   "name": "renumber-files",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Renumbers files with numbers in them",
   "main": "index.js",
   "directories": {
@@ -34,6 +34,5 @@
   ],
   "author": "Gil Tayar <gil@tayar.org>",
   "license": "MIT",
-  "bugs": {
-  }
+  "bugs": {}
 }
