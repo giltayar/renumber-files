@@ -1,8 +1,24 @@
+'use strict'
+//@flow
+const co = require('co')
+const thenify = require('thenify')
+const fs = require('fs')
+const path = require('path')
+const zip = require('lodash.zip')
+
+/*::
+type RenumberFilenamesOptions = {
+  start: number,
+  increment: number,
+  separator: string
+}
+*/
 
 exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
-  {start = 1, increment = 1, separator = '-'} = {})/*: [string]*/ => {
+  {start = 1, increment = 1, separator = '-'}/*:RenumberFilenamesOptions*/ = {})/*: Map<string, string> */ => {
   const fileInfo = fileNames.map(f =>
-    Object.assign({}, extractNumber(f, separator), {lastModified: f.lastModified}))
+    Object.assign({},
+      {originalName: f.name}, extractNumber(f, separator), {lastModified: f.lastModified}))
   fileInfo.sort((fi1, fi2) => {
     if (fi1.number !== undefined && fi2.number !== undefined) {
       const result = fi1.number - fi2.number
@@ -21,12 +37,40 @@ exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
     }
   })
 
-  return fileInfo.map((fi, i) =>
-    `${zeroPad(i === 0
+  return new Map(fileInfo.map((fi, i) =>
+    [
+      fi.originalName,
+      `${zeroPad(i === 0
         ? start
         : start + i * increment,
-        start, increment, fileInfo.length)}${separator}${fi.name}`)
+      start, increment, fileInfo.length)}${separator}${fi.name}`]))
 }
+
+exports.getFileInfos = (dir/*:string*/) => co.wrap(function*() {
+  const dirList = yield thenify(fs.readdir)(dir)
+
+  const stats = yield Promise.all(
+    dirList
+      .map(entry => fs.stat(path.join(dir, entry))))
+
+  const nameAndStats = zip([dirList, stats])
+
+  return nameAndStats
+    .filter(([name, stat]) => stat.isDir())
+    .map(([name, stat]) => ({name, lastModified: stat.mtime}))
+})
+
+exports.renameFiles = (dir/*:string*/, renamings/*:Map<string, string>*/) => co.wrap(function*() {
+  yield Promise.all(
+    Array.from(renamings.entries())
+      .map(([originalName, newName]) =>
+        thenify(fs.rename)(path.join(dir, originalName), path.join(dir, newName + '.renumber'))))
+
+  yield Promise.all(
+    Array.from(renamings.values())
+      .map(newName =>
+        thenify(fs.rename)(path.join(dir, newName + '.renumber'), path.join(dir, newName))))
+})
 
 const zerosToPadWith = '00000000000000000'
 
