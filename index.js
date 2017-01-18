@@ -10,9 +10,17 @@ const zip = require('lodash.zip')
 type RenumberFilenamesOptions = {
   start: number,
   increment: number,
-  separator: string
+  separator?: string
 }
 */
+
+exports.renumberFiles = (dir/*:string*/, options/*:RenumberFilenamesOptions*/) => co(function*() {
+  const fis = yield getFileInfos(dir)
+
+  const renamings = exports.renumberFilenames(fis, options)
+
+  yield renameFiles(dir, renamings)
+})
 
 exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
   {start = 1, increment = 1, separator = '-'}/*:RenumberFilenamesOptions*/ = {})/*: Map<string, string> */ => {
@@ -29,9 +37,9 @@ exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
         return fi1.lastModified.getTime() - fi2.lastModified.getTime()
       }
     } else if (fi1.number != null && fi2.number == null) {
-      return 1
-    } else if (fi1.number == null && fi2.number != null) {
       return -1
+    } else if (fi1.number == null && fi2.number != null) {
+      return 1
     } else {
       return fi1.name.localeCompare(fi2.name)
     }
@@ -46,7 +54,7 @@ exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
       start, increment, fileInfo.length)}${separator}${fi.name}`]))
 }
 
-exports.getFileInfos = (dir/*:string*/) => co(function*() {
+const getFileInfos = (dir) => co(function*() {
   const dirList = yield thenify(fs.readdir)(dir)
 
   const stats = yield Promise.all(
@@ -60,7 +68,7 @@ exports.getFileInfos = (dir/*:string*/) => co(function*() {
     .map(([name, stat]) => ({name, lastModified: stat.mtime}))
 })
 
-exports.renameFiles = (dir/*:string*/, renamings/*:Map<string, string>*/) => co(function*() {
+const renameFiles = (dir, renamings) => co(function*() {
   yield Promise.all(
     Array.from(renamings.entries())
       .map(([originalName, newName]) =>

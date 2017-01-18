@@ -23,6 +23,22 @@ describe('api', function () {
       expect(Array.from(result.keys())).to.have.members(original.map(fi => fi.name))
     })
 
+    it('should renumber numberless files after numbered files', () => {
+      const original = [
+        {name: 'aaa', lastModified: new Date()},
+        {name: 'ccc', lastModified: new Date()},
+        {name: '2-abc', lastModified: new Date()},
+        {name: '1-bbb', lastModified: new Date()}
+      ]
+      const result = renumberFilenames(original)
+
+      expect(Array.from(result.values())).to.deep.equal([
+        '1-bbb', '2-abc', '3-aaa', '4-ccc'
+      ])
+
+      expect(Array.from(result.keys())).to.have.members(original.map(fi => fi.name))
+    })
+
     it('should renumber files with numbers according to numbers', () => {
       const original = [
         {name: '01-aaa', lastModified: new Date()},

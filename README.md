@@ -16,6 +16,8 @@ npm install -g renumber-files
 
 ## Usage
 
+### Command Line
+
 ```bash
 renumber-files [_dir_] [--increment <increment>] [--start <start>]
 ```
@@ -24,9 +26,23 @@ Will renumber the files in the directory specified, or current directory if not 
 The delta between each number will be _increment_, where the default is 1,
 and will start at _start_, where the default is 1.
 
+### API
+
+The package exposes the function `renumberFiles`
+
+```javascript
+renumberFiles(directoryWhereFilesAre[, options])
+```
+
+where `options` is an object with the options fields:
+
+* `start`: from which number to start the numbering. Default 1.
+* `increment`: how much to increment each number. Default 1.
+* `separator`: what will be the separator between the number and the name. Default '-'.
+
 ## Renumbering algorithm
 
-The algorithm will be thus:
+The renumbering works like this:
 
 * List all files
 * For each file, if it is prefixed by digits,
