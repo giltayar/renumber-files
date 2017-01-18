@@ -46,21 +46,21 @@ exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
       start, increment, fileInfo.length)}${separator}${fi.name}`]))
 }
 
-exports.getFileInfos = (dir/*:string*/) => co.wrap(function*() {
+exports.getFileInfos = (dir/*:string*/) => co(function*() {
   const dirList = yield thenify(fs.readdir)(dir)
 
   const stats = yield Promise.all(
     dirList
-      .map(entry => fs.stat(path.join(dir, entry))))
+      .map(entry => thenify(fs.stat)(path.join(dir, entry))))
 
-  const nameAndStats = zip([dirList, stats])
+  const nameAndStats = zip(dirList, stats)
 
   return nameAndStats
-    .filter(([name, stat]) => stat.isDir())
+    .filter(([name, stat]) => stat.isFile())
     .map(([name, stat]) => ({name, lastModified: stat.mtime}))
 })
 
-exports.renameFiles = (dir/*:string*/, renamings/*:Map<string, string>*/) => co.wrap(function*() {
+exports.renameFiles = (dir/*:string*/, renamings/*:Map<string, string>*/) => co(function*() {
   yield Promise.all(
     Array.from(renamings.entries())
       .map(([originalName, newName]) =>

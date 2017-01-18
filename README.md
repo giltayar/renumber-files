@@ -17,11 +17,12 @@ npm install -g renumber-files
 ## Usage
 
 ```bash
-renumber-files [_dir_] [--interval <interval>] [--start <start>]
+renumber-files [_dir_] [--increment <increment>] [--start <start>]
 ```
 
-Will renumber the files in the directory specified, or current directory if not specified. The delta between
-each number will be _interval_, where the default is 1, and will start at _start_, where the default is 1.
+Will renumber the files in the directory specified, or current directory if not specified.
+The delta between each number will be _increment_, where the default is 1,
+and will start at _start_, where the default is 1.
 
 ## Renumbering algorithm
 
