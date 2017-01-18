@@ -2,6 +2,7 @@
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
 ![build status](https://travis-ci.org/CreateBootcamp/renumber-files.svg?branch=master)
+[![npm version](https://badge.fury.io/js/renumber-files.svg)](https://badge.fury.io/js/renumber-files)
 
 Renumbers files to look like this:
 
