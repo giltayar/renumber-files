@@ -1,6 +1,7 @@
 # renumber-files
 
 [![js-standard-style](https://cdn.rawgit.com/feross/standard/master/badge.svg)](http://standardjs.com)
+![build status](https://travis-ci.org/CreateBootcamp/renumber-files.svg?branch=master)
 
 Renumbers files to look like this:
 
