@@ -34,5 +34,12 @@
   ],
   "author": "Gil Tayar <gil@tayar.org>",
   "license": "MIT",
-  "bugs": {}
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/create-oss/renumber-files.git"
+  },
+  "bugs": {
+    "url": "https://github.com/create-oss/renumber-files/issues"
+  },
+  "homepage": "https://github.com/create-oss/renumber-files#readme"
 }
