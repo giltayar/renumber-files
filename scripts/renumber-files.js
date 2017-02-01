@@ -8,11 +8,16 @@ const {renumberFiles} = require('../index')
 const optionDefinitions = [
   {name: 'increment', alias: 'i', type: Number},
   {name: 'dir', type: String, defaultOption: true, defaultValue: '.'},
-  {name: 'start', alias: 's', type: Number}
+  {name: 'start', alias: 's', type: Number},
+  {name: 'exclude', alias: 'x', type: String, multiple: true}
 ]
 
 const options = commandLineArgs(optionDefinitions)
-renumberFiles(options.dir, {start: options.start, increment: options.increment})
+
+renumberFiles(options.dir, {
+  start: options.start,
+  increment: options.increment,
+  excludeFiles: options.exclude})
   .catch(err => {
     console.error(err)
     process.exit(1)

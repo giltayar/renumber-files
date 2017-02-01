@@ -27,16 +27,17 @@ describe('renumber-files script', function () {
   it('should rename the files in the test-folder', co.wrap(function* () {
     const testFolder = yield prepareTestFolder()
     const code = yield new Promise((resolve, reject) =>
-      fork(path.resolve(__dirname, '../scripts/renumber-files'), {cwd: testFolder})
+      fork(path.resolve(__dirname, '../scripts/renumber-files'), [
+        '--exclude', 'README.md'
+      ], {cwd: testFolder})
         .on('error', reject)
         .on('exit', resolve))
 
     expect(code).to.equal(0)
 
     const resultFiles = yield thenify(fs.readdir)(testFolder)
-
     expect(resultFiles).to.have.members([
-      '1-abc', '2-aaa', '3-ccc', '4-bbb'
+      '1-abc', '2-aaa', '3-ccc', '4-bbb', 'README.md'
     ])
   }))
 
@@ -46,7 +47,8 @@ describe('renumber-files script', function () {
       fork(path.resolve(__dirname, '../scripts/renumber-files'), [
         '--dir', testFolder,
         '--increment', '10',
-        '--start', '3'
+        '--start', '3',
+        '--exclude', 'README.md'
       ])
         .on('error', reject)
         .on('exit', resolve))
@@ -56,7 +58,7 @@ describe('renumber-files script', function () {
     const resultFiles = yield thenify(fs.readdir)(testFolder)
 
     expect(resultFiles).to.have.members([
-      '03-abc', '13-aaa', '23-ccc', '33-bbb'
+      '03-abc', '13-aaa', '23-ccc', '33-bbb', 'README.md'
     ])
   }))
 })

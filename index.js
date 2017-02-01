@@ -10,7 +10,8 @@ const zip = require('lodash.zip')
 type RenumberFilenamesOptions = {
   start: number,
   increment: number,
-  separator?: string
+  separator?: string,
+  excludeFiles?: string[]
 }
 */
 
@@ -23,11 +24,15 @@ exports.renumberFiles = (dir/*:string*/, options/*:RenumberFilenamesOptions*/) =
 })
 
 exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
-  {start = 1, increment = 1, separator = '-'}/*:RenumberFilenamesOptions*/ = {})/*: Map<string, string> */ => {
-  const fileInfo = fileNames.map(f =>
-    Object.assign({},
-      {originalName: f.name}, extractNumber(f, separator), {lastModified: f.lastModified}))
-  fileInfo.sort((fi1, fi2) => {
+  {start = 1, increment = 1, separator = '-', excludeFiles = []}
+    /*:RenumberFilenamesOptions*/ = {})/*: Map<string, string> */ => {
+  const fileInfos = fileNames
+    .map(f =>
+      Object.assign({},
+        {originalName: f.name}, extractNumber(f, separator), {lastModified: f.lastModified}))
+    .filter(f => !excludeFiles.includes(f.name))
+
+  fileInfos.sort((fi1, fi2) => {
     if (fi1.number !== undefined && fi2.number !== undefined) {
       const result = fi1.number - fi2.number
 
@@ -45,13 +50,13 @@ exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
     }
   })
 
-  return new Map(fileInfo.map((fi, i) =>
+  return new Map(fileInfos.map((fi, i) =>
     [
       fi.originalName,
       `${zeroPad(i === 0
         ? start
         : start + i * increment,
-      start, increment, fileInfo.length)}${separator}${fi.name}`]))
+      start, increment, fileInfos.length)}${separator}${fi.name}`]))
 }
 
 const getFileInfos = (dir) => co(function*() {
