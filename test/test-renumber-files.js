@@ -37,7 +37,7 @@ describe('renumber-files script', function () {
 
     const resultFiles = yield thenify(fs.readdir)(testFolder)
     expect(resultFiles).to.have.members([
-      '1-abc', '2-aaa', '3-ccc', '4-bbb', 'README.md'
+      '1-abc', '2-aaa', '3-ccc', '4-bbb', 'README.md', '.foo'
     ])
   }))
 
@@ -58,7 +58,7 @@ describe('renumber-files script', function () {
     const resultFiles = yield thenify(fs.readdir)(testFolder)
 
     expect(resultFiles).to.have.members([
-      '03-abc', '13-aaa', '23-ccc', '33-bbb', 'README.md'
+      '03-abc', '13-aaa', '23-ccc', '33-bbb', 'README.md', '.foo'
     ])
   }))
 })

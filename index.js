@@ -61,12 +61,13 @@ exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
 
 const getFileInfos = (dir) => co(function*() {
   const dirList = yield thenify(fs.readdir)(dir)
+  const dirListWithoutDotFiles = dirList.filter(f => !f.startsWith('.'))
 
   const stats = yield Promise.all(
-    dirList
+    dirListWithoutDotFiles
       .map(entry => thenify(fs.stat)(path.join(dir, entry))))
 
-  const nameAndStats = zip(dirList, stats)
+  const nameAndStats = zip(dirListWithoutDotFiles, stats)
 
   return nameAndStats
     .filter(([name, stat]) => stat.isFile())
