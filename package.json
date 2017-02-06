@@ -1,6 +1,6 @@
 {
   "name": "renumber-files",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Renumbers files with numbers in them",
   "main": "index.js",
   "directories": {
