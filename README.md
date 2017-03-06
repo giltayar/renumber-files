@@ -21,12 +21,13 @@ npm install -g renumber-files
 ### Command Line
 
 ```bash
-renumber-files [_dir_] [--increment <increment>] [--start <start>] [[-exclude <filename>]]
+renumber-files [_dir_] [--increment <increment>] [--start <start>] [[-exclude <filename>]] [--dirs]
 ```
 
 Will renumber the files in the directory specified, or current directory if not specified.
 The delta between each number will be _increment_, where the default is 1,
-and will start at _start_, where the default is 1. It will exclude `<filename>` from the renumbering
+and will start at _start_, where the default is 1. It will exclude `<filename>` from the renumbering.
+If _dirs_, then listing will also take into account directories
 
 ### API
 

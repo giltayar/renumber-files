@@ -11,12 +11,13 @@ type RenumberFilenamesOptions = {
   start: number,
   increment: number,
   separator?: string,
-  excludeFiles?: string[]
+  excludeFiles?: string[],
+  withDirs?: boolean
 }
 */
 
 exports.renumberFiles = (dir/*:string*/, options/*:RenumberFilenamesOptions*/) => co(function*() {
-  const fis = yield getFileInfos(dir)
+  const fis = yield getFileInfos(dir, options.withDirs || false)
 
   const renamings = exports.renumberFilenames(fis, options)
 
@@ -59,8 +60,9 @@ exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
       start, increment, fileInfos.length)}${separator}${fi.name}`]))
 }
 
-const getFileInfos = (dir) => co(function*() {
+const getFileInfos = (dir, withDirs) => co(function*() {
   const dirList = yield thenify(fs.readdir)(dir)
+
   const dirListWithoutDotFiles = dirList.filter(f => !f.startsWith('.'))
 
   const stats = yield Promise.all(
@@ -70,7 +72,7 @@ const getFileInfos = (dir) => co(function*() {
   const nameAndStats = zip(dirListWithoutDotFiles, stats)
 
   return nameAndStats
-    .filter(([name, stat]) => stat.isFile())
+    .filter(([name, stat]) => withDirs || stat.isFile())
     .map(([name, stat]) => ({name, lastModified: stat.mtime}))
 })
 

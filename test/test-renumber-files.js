@@ -37,7 +37,7 @@ describe('renumber-files script', function () {
 
     const resultFiles = yield thenify(fs.readdir)(testFolder)
     expect(resultFiles).to.have.members([
-      '1-abc', '2-aaa', '3-ccc', '4-bbb', 'README.md', '.foo'
+      '1-abc', '2-aaa', '3-ccc', '41-bbb', 'README.md', '.foo'
     ])
   }))
 
@@ -45,9 +45,10 @@ describe('renumber-files script', function () {
     const testFolder = yield prepareTestFolder()
     const code = yield new Promise((resolve, reject) =>
       fork(path.resolve(__dirname, '../scripts/renumber-files'), [
-        '--dir', testFolder,
+        '--on', testFolder,
         '--increment', '10',
         '--start', '3',
+        '--dirs',
         '--exclude', 'README.md'
       ])
         .on('error', reject)
