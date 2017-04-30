@@ -24,7 +24,7 @@ exports.renumberFiles = (dir/*:string*/, options/*:RenumberFilenamesOptions*/) =
   yield renameFiles(dir, renamings)
 })
 
-exports.renumberFilenames = (fileNames/*:[{name: string, lastModified: Date}]*/,
+exports.renumberFilenames = (fileNames/*:{name: string, lastModified: Date}[]*/,
   {start = 1, increment = 1, separator = '-', excludeFiles = []}
     /*:RenumberFilenamesOptions*/ = {})/*: Map<string, string> */ => {
   const fileInfos = fileNames
