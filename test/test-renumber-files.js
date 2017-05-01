@@ -15,12 +15,6 @@ describe('renumber-files script', function () {
     const testFolderFixture = testFixture('test-folder')
     const testFolder = yield thenify(testFolderFixture.copy.bind(testFolderFixture))()
 
-    const later = new Date(2001, 1, 2).getTime() / 1000
-    const earlier = new Date(2001, 1, 1).getTime() / 1000
-
-    yield thenify(fs.utimes)(path.join(testFolder, '10-aaa'), later, later)
-    yield thenify(fs.utimes)(path.join(testFolder, '10-abc'), earlier, earlier)
-
     return testFolder
   })
 
@@ -36,6 +30,7 @@ describe('renumber-files script', function () {
     expect(code).to.equal(0)
 
     const resultFiles = yield thenify(fs.readdir)(testFolder)
+    
     expect(resultFiles).to.have.members([
       '1-abc', '2-aaa', '3-ccc', '41-bbb', 'README.md', '.foo'
     ])

@@ -10,7 +10,7 @@ const zip = require('lodash.zip')
 type RenumberFilenamesOptions = {
   start: number,
   increment: number,
-  separator?: string,
+  separator: string,
   excludeFiles?: string[],
   withDirs?: boolean
 }
@@ -24,14 +24,14 @@ exports.renumberFiles = (dir/*:string*/, options/*:RenumberFilenamesOptions*/) =
   yield renameFiles(dir, renamings)
 })
 
-exports.renumberFilenames = (fileNames/*:{name: string, lastModified: Date}[]*/,
+exports.renumberFilenames = (fileNames/*:string[]*/,
   {start = 1, increment = 1, separator = '-', excludeFiles = []}
     /*:RenumberFilenamesOptions*/ = {})/*: Map<string, string> */ => {
   const fileInfos = fileNames
     .map(f =>
       Object.assign({},
-        {originalName: f.name}, extractNumber(f, separator), {lastModified: f.lastModified}))
-    .filter(f => !excludeFiles.includes(f.name))
+        {originalName: f}, extractNumber(f, separator)))
+    .filter(f => !excludeFiles.includes(f.originalName))
 
   fileInfos.sort((fi1, fi2) => {
     if (fi1.number !== undefined && fi2.number !== undefined) {
@@ -40,7 +40,7 @@ exports.renumberFilenames = (fileNames/*:{name: string, lastModified: Date}[]*/,
       if (result !== 0) {
         return result
       } else {
-        return fi1.lastModified.getTime() - fi2.lastModified.getTime()
+        return (fi1.numberSuffix || '').localeCompare(fi2.numberSuffix || '')
       }
     } else if (fi1.number != null && fi2.number == null) {
       return -1
@@ -51,13 +51,21 @@ exports.renumberFilenames = (fileNames/*:{name: string, lastModified: Date}[]*/,
     }
   })
 
-  return new Map(fileInfos.map((fi, i) =>
-    [
+  // I tried - I really tried to make it functional. It would have been very convoluted.
+  let index = 0
+  const res = []
+  for (const fi of fileInfos) {
+    if (index === 0) {
+      index = start
+    } else if (!fi.numberSuffix) {
+      index += increment
+    }
+    res.push([
       fi.originalName,
-      `${zeroPad(i === 0
-        ? start
-        : start + i * increment,
-      start, increment, fileInfos.length)}${separator}${fi.name}`]))
+      `${zeroPad(index, start, increment, fileInfos.length)}${fi.numberSuffix || ''}${separator}${fi.name}`])
+  }
+
+  return new Map(res)
 }
 
 const getFileInfos = (dir, withDirs) => co(function*() {
@@ -73,7 +81,7 @@ const getFileInfos = (dir, withDirs) => co(function*() {
 
   return nameAndStats
     .filter(([name, stat]) => withDirs || stat.isFile())
-    .map(([name, stat]) => ({name, lastModified: stat.mtime}))
+    .map(([name, stat]) => name)
 })
 
 const renameFiles = (dir, renamings) => co(function*() {
@@ -102,11 +110,13 @@ const zeroPad = (number, start, increment, length) => {
 const extractNumber = (
   file,
   separator) => {
-  const [, number, name] = /([0-9]*)(.*)/.exec(file.name)
+  const [, number, afterNumber] = new RegExp(`([0-9]*)(.*)`).exec(file)
+  const [numberSuffix, ...nameParts] = afterNumber.split('-')
+  const name = nameParts.join('')
 
   return {
     number: number ? parseInt(number) : undefined,
-    name: separator && name.startsWith(separator) ? name.slice(separator.length) : name,
-    lastModified: file.lastModified
+    numberSuffix: !name ? undefined : numberSuffix,
+    name: !name ? numberSuffix : name
   }
 }

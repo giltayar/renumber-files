@@ -51,9 +51,12 @@ The renumbering works like this:
 * List all files
 * For each file, if it is prefixed by digits,
   grab those digits into a number, and remember.
+  Also remember the number suffix if there are non-digits before separator.
 * Sort the files with numbers first.
-  If two files have the same number,
-  use the modification time to sort between the two.
+  If two files have the same number, use the number suffix. If there is no number suffix,
+  use their names.
   The numberless files will be last, sorted by name.
-* Now remove all numbers from the files with numbers, and renumber according to the sort.
-* Renumbering will be _number_-_filename_, where number is padded with zeros to make a lexical sort work.
+* Now remove all numbers from the files with numbers, and renumber according to the sort. Note that
+  files with the same number but a different suffix will still have the same number.
+* Renumbering will be `<number><numberSuffix>-<filename>`, where number is padded with zeros to make a lexical sort
+  work.

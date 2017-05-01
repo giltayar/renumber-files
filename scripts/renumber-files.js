@@ -16,6 +16,7 @@ const optionDefinitions = [
 const options = commandLineArgs(optionDefinitions)
 
 renumberFiles(options.on, {
+  separator: '-',
   start: options.start,
   increment: options.increment,
   excludeFiles: options.exclude,
