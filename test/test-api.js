@@ -56,7 +56,7 @@ describe('api', function () {
 
     it('should renumber files with numbers according to numbers', () => {
       const original = [
-        '10-aaa',
+        '10-aaa-more',
         '30-ccc',
         '20-abc',
         '41-bbb'
@@ -64,7 +64,7 @@ describe('api', function () {
       const result = renumberFilenames(original)
 
       expect(Array.from(result.values())).to.deep.equal([
-        '1-aaa', '2-abc', '3-ccc', '4-bbb'
+        '1-aaa-more', '2-abc', '3-ccc', '4-bbb'
       ])
       expect(Array.from(result.keys())).to.have.members(original)
     })

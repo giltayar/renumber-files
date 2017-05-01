@@ -111,8 +111,8 @@ const extractNumber = (
   file,
   separator) => {
   const [, number, afterNumber] = new RegExp(`([0-9]*)(.*)`).exec(file)
-  const [numberSuffix, ...nameParts] = afterNumber.split('-')
-  const name = nameParts.join('')
+  const [numberSuffix, ...nameParts] = afterNumber.split(separator)
+  const name = nameParts.join(separator)
 
   return {
     number: number ? parseInt(number) : undefined,

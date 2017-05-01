@@ -58,5 +58,5 @@ The renumbering works like this:
   The numberless files will be last, sorted by name.
 * Now remove all numbers from the files with numbers, and renumber according to the sort. Note that
   files with the same number but a different suffix will still have the same number.
-* Renumbering will be `<number><numberSuffix>-<filename>`, where number is padded with zeros to make a lexical sort
-  work.
+* Renumbering will be `<number><numberSuffix>-<filename>`, where number is padded with zeros to
+  make a lexical sort work.
